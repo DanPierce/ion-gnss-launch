@@ -1,0 +1,29 @@
+<launch>
+
+    <!-- global parameters -->
+    <param name="latitude_reference" value="32.6006"/> <!-- Stadium parking deck lat/long -->
+    <param name="longitude_reference" value="-85.4891"/>
+
+    <!-- arguments -->
+    <arg name="bagpath" default="/media/psf/Home/Google Drive/GAVLAB/data/ion_gnss_2017/gps_imu_only"/>
+    <arg name="bagfile" default="$(arg bagpath)/ion_gnss_parking_deck_take4_filt"/>
+
+    <arg name="start_time" default="40"/>
+
+    <!-- bagfile playback -->
+    <param name="use_sim_time" value="true"/>
+    <node name="player" pkg="rosbag" type="play" args="-s $(arg start_time) -l --clock -r 1.0 '$(arg bagfile).bag'" />
+
+    <!-- GPS/INS -->
+    <node pkg="ins_ekf" type="gps_ins_node" name="gps_ins_node" output="screen" >
+        <!-- Note: parameters specified in the launch file will overwrite those in the yaml file -->
+        <!-- <rosparam file="$(find ion_gnss_launch)/config/kvh_gps_ins.yaml" command="load" /> -->
+        <rosparam file="$(find ion_gnss_launch)/config/xsens_gps_ins.yaml" command="load" />
+        <param name="queue_size" value="0"/>
+
+    </node>
+
+    <node pkg="rosbag" type="record" name="bagman" args="-b 0 -a -O '$(arg bagpath)/ion_gnss_parking_deck_take4_w_gps_ins.bag'" />
+
+
+</launch>

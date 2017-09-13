@@ -1,0 +1,60 @@
+<launch>
+
+    <!-- global parameters -->
+    <param name="latitude_reference" value="32.6006"/> <!-- Stadium parking deck lat/long -->
+    <param name="longitude_reference" value="-85.4891"/>
+
+  <arg name="bagpath" default="/media/psf/Home/Google Drive/GAVLAB/data/ion_gnss_2017/trimmed"/>
+
+<arg name="bagfile" default="$(arg bagpath)/ion_gnss_parking_deck_take4_trimmed"/>
+
+  <arg name="start_time" default="35"/>
+
+  <!-- bagfile playback -->
+    <param name="use_sim_time" value="true"/>
+  <node name="player" pkg="rosbag" type="play" required="true" args="-s $(arg start_time) --clock -r 1.0 '$(arg bagfile).bag'" />
+
+  <!-- Feature extraction -->
+  <node pkg="feature_extraction" type="feature_extraction_node" name="feature_extraction_node" output="screen" >
+
+    <param name="cloud_leveling" value="true"/>
+
+  	<param name="cluster_tolerance" value="1.0"/>
+    <param name="cluster_min_count" value="1"/>
+    <param name="cluster_max_count" value="1000"/>
+    <param name="cluster_radius_threshold" value="0.2"/>
+    <param name="number_detection_channels" value="2"/>
+
+    <param name="x_max" value="100.0"/>
+    <param name="x_min" value="0.0"/>
+    <param name="y_max" value="50.0"/>
+    <param name="y_min" value="-50.0"/>
+    
+    <param name="z_max" value="4.0"/>
+    <param name="z_min" value="-1.25"/>
+
+    <param name="estimate_descriptors" value="false"/>
+
+  </node>
+
+  <!-- GPS/INS -->
+  <node pkg="ins_ekf" type="gps_ins_node" name="gps_ins_node" output="screen" >
+      <rosparam file="$(find ion_gnss_launch)/config/xsens_gps_ins.yaml" command="load" />
+  </node>
+
+  <!-- TDCP -->
+  <node name="tdcp_node" pkg="tdcp" type="tdcp_node" />
+
+  <node name="bagman" pkg="rosbag" type="record" args="-b 0 -a -x '/usb_cam_node/(.*)|/velodyne(.*)|/feature_extraction_node/cloud|/feature_extraction_node/keypoint_cloud' -O take4_trimmed_processed" />
+
+  <!-- <node pkg="rviz" type="rviz" name="rviz" args="-d $(find feature_extraction)/rviz/vel_and_kp_viz.rviz"/> -->
+
+  <!-- <node pkg="rviz" type="rviz" name="rviz" args="-d $(find feature_extraction)/rviz/main_viz.rviz"/> -->
+
+</launch>
+
+
+
+<!-- rosbag record -b 0 -a -x "/usb_cam_node/(.*)|/velodyne(.*)" -O 'ion_gnss_with_normals2d' -->
+
+

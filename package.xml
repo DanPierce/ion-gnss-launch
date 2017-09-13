@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package>
+  <name>ion_gnss_launch</name>
+  <version>0.0.0</version>
+  <description>The ion_gnss_launch package</description>
+
+  <maintainer email="jdp0009@auburn.edu">Dan Pierce</maintainer>
+
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+
+  <export>
+
+  </export>
+</package>

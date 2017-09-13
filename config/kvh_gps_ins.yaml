@@ -1,0 +1,40 @@
+gps_topic_name: /novatel_node/odom
+imu_topic_name: /kvh_1750_imu/imu
+
+imu_time_step: 0.01
+
+gps_course_min_speed: 0.5
+
+initial_heading_deg: 999.0 # value greater than 360 means automatic initialization using course
+
+accelerometer_leveling: true # whether to initialize roll/pitch with accelerometer - otherwise use roll = pitch = 0
+
+queue_size: 0
+
+# 0.0873 rad = 5 degrees
+initial_attitude_std_dev: 0.0873
+
+gps_position_updates: true
+gps_velocity_updates: true
+
+
+# IMU noise (0 -> use covariance from imu message)
+# Note: these values taken from Allan variance characterization (See Year 2 QR 2). 
+#   Bias offset values taken from data sheet.
+random_walk_accelerometer: 0.00089643
+bias_instability_accelerometer: 0.00038900
+bias_offset_accelerometer: 0.05
+random_walk_gyroscope: 0.00073780
+bias_instability_gyroscope: 0.000066007
+bias_offset_gyroscope: 0.000024241
+
+input_rotation_matrix: [ 1,  0,  0,
+                         0, -1,  0,
+                         0,  0, -1]
+
+# offset from IMU to antenna 
+longitudinal_antenna_offset: 0.0
+lateral_antenna_offset: 0.0
+vertical_antenna_offset: 0.0
+
+

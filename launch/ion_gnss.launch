@@ -1,0 +1,101 @@
+<launch>
+	
+	<!-- xsens -->
+	<node pkg="xsens_driver" type="mtnode.py" name="xsens_driver" output="screen" >
+		<param name="frame_id" value="/imu"/>
+
+		<param name="device" value="/dev/ttyUSB1"/>
+		<param name="frame_local" value="ENU"/>
+		<param name="frame_local_imu" value="ENU"/>
+	</node>
+
+	<!-- KVH IMU -->
+	<node name="kvh_1750_imu" pkg="kvh1750" type="kvh_1750_imu" output="screen">
+		<rosparam command="load" file="$(find kvh1750)/config/kvh1725.yaml"/>
+	</node>
+
+	<!-- USB cam -->
+	<!-- <include file="/home/prowler/devel/lidar_ws/launch/UI_1221LE.launch"/> -->
+
+	<!-- Novatel -->
+	<include file="/home/prowler/devel/lidar_ws/launch/novatel_for_ion.launch"/>
+
+	<!-- Velodyne -->
+	<include file="$(find velodyne_pointcloud)/launch/VLP16_points.launch"/>
+
+	<!-- Septentrio -->
+	<!-- <include file="$(find septentrio)/launch/septentrio.launch"/> -->
+
+</launch>
+
+<!-- rosbag record -b 0 -a -x "/fix|/fix_extended|/temperature|/usb_cam_node/image_raw/(.*)|/velodyne_packets" -o ion_gnss -->
+<!-- ^^ about 1 GB/min -->
+
+
+
+<!-- /camera/image_raw/compressed -->
+
+<!-- 
+Check list:
+
+1) xsens:
+	a) data?
+	b) GPS time being published?
+2) kvh data?
+3) novatel 
+	a) RTK working?
+	b) raw measurements? Ephemeris?
+4) velodyne
+	a) check if GPS time locked
+	b) check if data in ROS
+5) ueye images coming in?
+
+ -->
+
+<!-- rosbag record /camera/camera_info /camera/image_raw/compressed /camera/timeout_count /fix /fix_extended /gps_time /kvh_1750_imu/imu /kvh_1750_imu/temp /magnetic /nodelet_manager/bond /novatel_node/gpsEphemerisTagged /novatel_node/navSatFix /novatel_node/odom /novatel_node/rawMeasurementsTagged /pressure /temperature /tf /velocity /velodyne_points /xsens/data -b 0 -o ion_gnss_parking_deck_take3 -->
+
+<!-- /camera/camera_info
+/camera/image_raw
+/camera/image_raw/compressed
+/camera/image_raw/compressed/parameter_descriptions
+/camera/image_raw/compressed/parameter_updates
+/camera/image_raw/compressedDepth
+/camera/image_raw/compressedDepth/parameter_descriptions
+/camera/image_raw/compressedDepth/parameter_updates
+/camera/image_raw/theora
+/camera/image_raw/theora/parameter_descriptions
+/camera/image_raw/theora/parameter_updates
+/camera/timeout_count
+/diagnostics
+/fix
+/fix_extended
+/gps_time
+/kvh_1750_imu/imu
+/kvh_1750_imu/temp
+/magnetic
+/nodelet_manager/bond
+/novatel_node/gpsEphemerisTagged
+/novatel_node/navSatFix
+/novatel_node/odom
+/novatel_node/rawMeasurementsTagged
+/pressure
+/rosout
+/rosout_agg
+/temperature
+/tf
+/ueye_cam_nodelet/parameter_descriptions
+/ueye_cam_nodelet/parameter_updates
+/velocity
+/velodyne_nodelet_manager/bond
+/velodyne_nodelet_manager_cloud/parameter_descriptions
+/velodyne_nodelet_manager_cloud/parameter_updates
+/velodyne_nodelet_manager_driver/parameter_descriptions
+/velodyne_nodelet_manager_driver/parameter_updates
+/velodyne_packets
+/velodyne_points
+/xsens/data -->
+
+<!-- log comconfig
+com com1 115200
+COM2,115200,RTCM,NONE
+saveconfig -->
